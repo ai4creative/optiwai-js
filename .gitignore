@@ -1,0 +1,10 @@
+node_modules
+.env
+logs
+.idea/
+.DS_Store
+**/*/.DS_Store
+.nyc_output
+.bin
+dist
+lib

@@ -1,0 +1,55 @@
+{
+   "name": "@optiwai/node-sdk",
+   "version": "0.2.0",
+   "main": "lib/index.js",
+   "types": "types/index.d.ts",
+   "description": "OptiwAI SDK for NodeJS",
+   "repository": "https://github.com/ai4creative/optiwai-js",
+   "license": "ISC",
+   "author": "OptiwAI <support@optiwai.com>",
+   "devDependencies": {
+      "@types/joi": "^14.3.3",
+      "@types/mocha": "^5.2.7",
+      "@types/node": "^8.10.54",
+      "@types/request-promise": "^4.1.44",
+      "@types/sinon": "^7.0.13",
+      "@typescript-eslint/eslint-plugin": "^2.1.0",
+      "@typescript-eslint/parser": "^2.1.0",
+      "chai": "^4.2.0",
+      "eslint": "^6.3.0",
+      "eslint-config-prettier": "^6.1.0",
+      "eslint-plugin-prettier": "^3.1.0",
+      "husky": "^3.0.5",
+      "lint-staged": "^9.2.5",
+      "mocha": "^6.2.0",
+      "nyc": "^14.1.1",
+      "prettier": "^1.18.2",
+      "sinon": "^7.4.2",
+      "ts-node": "^3.3.0",
+      "ts-node-dev": "^1.0.0-pre.42",
+      "typescript": "^3.6.3"
+   },
+   "scripts": {
+      "start": "ts-node-dev --no-deps --ignore-watch node_modules --no-notify --respawn src/index.ts",
+      "test": "NODE_ENV=package-test mocha --color --ui tdd -r ts-node/register --recursive 'spec/**/*.spec.ts' --exit",
+      "prepublish": "lint-staged && npm test",
+      "build": "tsc",
+      "prepare": "npm run build"
+   },
+   "husky": {
+      "hooks": {
+         "pre-commit": "lint-staged && npm test"
+      }
+   },
+   "lint-staged": {
+      "*.ts": [
+         "eslint --fix",
+         "git add"
+      ]
+   },
+   "dependencies": {
+      "joi": "14.3.1",
+      "request": "2.88.0",
+      "request-promise": "4.2.4"
+   }
+}

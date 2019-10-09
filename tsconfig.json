@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es5",
+      "es6"
+    ],
+    "target": "esnext",
+    "module": "commonjs",
+    "outDir": "./lib",
+    "strictNullChecks": true,
+    "typeRoots": [
+      "types/index.d.ts",
+      "node_modules/@types/**/*"
+    ],
+    "types": [
+      "node",
+      "mocha"
+    ]
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "spec",
+    "lib"
+  ]
+}
