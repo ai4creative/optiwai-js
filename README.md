@@ -33,9 +33,9 @@ processingPromise.then((result) => {
     /**
     * Outputs:
     * { 
-    *   thuLow: 'http://optiwai.com/api/v1/download/c6d5b629-tl-my_image.jpg',
-    *   thuHigh: 'http://localhost:4242/api/v1/download/c6d5b629-th-my_image.jpg',
-    *   optimized: 'http://localhost:4242/api/v1/download/c6d5b629-o-my_image.jpg' 
+    *   thuLow: 'https://optiwai.com/api/v1/download/c6d5b629-tl-my_image.jpg',
+    *   thuHigh: 'https://optiwai.com/api/v1/download/c6d5b629-th-my_image.jpg',
+    *   optimized: 'https://optiwai.com/api/v1/download/c6d5b629-o-my_image.jpg' 
     * }
     */
 })
