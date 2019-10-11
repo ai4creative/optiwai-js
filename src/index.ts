@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import * as fs from 'fs';
 import * as rp from 'request-promise';
 import {
