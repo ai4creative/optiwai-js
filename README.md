@@ -23,11 +23,11 @@ OptiwAI.init({
 
 Now, you should be able to use processing method available in SDK:
 
-`const processingResult = await opti.processFile(file, options);`
+`const processingResult = await OptiwAI.processFile(file, options);`
 
 It returns a promise. To grab its value use Promise.then, for example:
 ```
-const processingPromise = opti.processFile(fs.createReadStream('/home/images/my_image.jpg'), { filename: 'my_image.jpg' });
+const processingPromise = OptiwAI.processFile(fs.createReadStream('/home/images/my_image.jpg'), { filename: 'my_image.jpg' });
 processingPromise.then((result) => {
     console.log(result); 
     /**
