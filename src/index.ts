@@ -31,7 +31,7 @@ const uploadDataValidationSchema = Joi.object({
 
 const OptiwAI = {
   optiwAISettings: {
-    url: 'https://optiwai.com',
+    url: 'https://app.optiwai.com',
     apiClient: '',
     apiSecret: ''
   },
@@ -57,7 +57,7 @@ const OptiwAI = {
 
     try {
       const response = await rp.post({
-        url: `${OptiwAI.optiwAISettings.url}/api/v1/upload`,
+        url: `${OptiwAI.optiwAISettings.url}/api/v1/upload/api`,
         headers: {
           timestamp,
           apiclient: OptiwAI.optiwAISettings.apiClient,

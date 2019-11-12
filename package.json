@@ -1,6 +1,6 @@
 {
    "name": "@optiwai/node-sdk",
-   "version": "0.2.3",
+   "version": "1.0.0",
    "main": "lib/index.js",
    "types": "types/index.d.ts",
    "description": "OptiwAI SDK for NodeJS",

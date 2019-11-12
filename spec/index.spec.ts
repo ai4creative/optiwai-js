@@ -372,7 +372,7 @@ suite('sendRequest', () => {
 
     sinon.assert.calledOnce(fakeRequest);
     sinon.assert.calledWith(fakeRequest, {
-      url: 'http://test.com/api/v1/upload',
+      url: 'http://test.com/api/v1/upload/api',
       headers: {
         timestamp: new Date().getTime(),
         apiclient: 'api-client',
