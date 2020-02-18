@@ -26,7 +26,9 @@ const uploadDataValidationSchema = Joi.object({
     .valid('auto', 'retouched', 'lowQuality')
     .default('auto'),
   whiteBalance: Joi.boolean().default(false),
-  hdr: Joi.boolean().default(false)
+  dehaze: Joi.boolean().default(false),
+  hdr: Joi.boolean().default(false),
+  workflowId: Joi.string()
 });
 
 const OptiwAI = {
