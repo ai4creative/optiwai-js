@@ -113,3 +113,4 @@ export type OptiwAIMetadaSettings = {
 
 export function init(settings: OptiwAISettings): void;
 export function processFile(file: OptiwAIFile, data: OptiwAIUploadSettings): Promise<OptiwAIProcessingResponse>;
+export function getMetadata(file: OptiwAIFile, data: OptiwAIMetadaSettings): Promise<OptiwAIMetadataResponse>;
