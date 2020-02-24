@@ -2,12 +2,12 @@
 
 SDK for OptiwAI application. Fast and easy usage of API Keys for files processing via OptiwAI engine.
 
-#### Installation 
+## Installation 
 Install NPM module into your project: 
  
 `npm install @optiwai/node-sdk`
 
-#### Usage
+## Initialization
 First, import OptiwAI SDK in your application:  
 
 `const OptiwAI = require('@optiwai/node-sdk')`  
@@ -19,6 +19,9 @@ OptiwAI.init({
   apiSecret: 'Your_API_Secret_key'
 })
 ```
+
+## Optimize file API usage
+
 Now, you should be able to use processing method available in SDK:
 
 `const processingResult = await OptiwAI.processFile(file, options)`
@@ -101,6 +104,75 @@ processingUsingWorkflow.then(
   (result) => console.log('processing using workflow result', result)
 );
 
+```
+
+## Metadata API usage
+
+To get file metadata using OptiwAI API use *getMetadata* method available in SDK:
+
+`const metadataResult = await OptiwAI.getMetadata(file, options)`
+
+It returns a promise. To grab its value use Promise.then, for example:
+```javascript
+const metadataPromise = OptiwAI.getMetadata(
+  fs.createReadStream('/home/images/my_image.jpg'), 
+  { 
+    filename: 'my_image.jpg' 
+  }
+);
+
+metadataPromise.then((result) => {
+    console.log(result); 
+    /*
+      Outputs:
+      { 
+        faces: [], // Array of detected faces on image
+        celebrities: [], // Array of detected celebrities on image
+        objects: [] // Array of detected objects on image
+      }
+    */
+}) 
+```
+
+#### Parameters
+
+File can be one of:
+
+* **string** with absolute path to your file, ex. `'/home/images/my_image.jpg'`
+* **Buffer**, ex. return value of `fs.readFileSync('/home/images/my_image.jpg')`
+* **ReadStream**, ex. `fs.createReadStream('/home/images/my_image.jpg')`
+
+Options:
+
+* filename (required) - name of processed file.
+* minConfidence (optional, default: 80) - Minimum confidence that detected item is there (in percentage).
+* faces (optional, default: true) - Either detect faces on image or not.
+* celebrities (optional, default: true) - Either detect celebrities on image or not.
+* objects (optional, default: true) - Either detect objects on image or not.
+
+#### Full code example
+
+```javascript
+const OptiwAI = require('@optiwai/node-sdk');
+
+OptiwAI.init({
+  apiClient: 'API_CLIENT',
+  apiSecret: 'API_SECRET'
+});
+
+const file = '/home/my_file.jpg';
+
+const metadataPromise = OptiwAI.getMetadata(file, {
+  minConfidence: 50,
+  faces: true,
+  celebrities: true,
+  objects: true,
+  filename: 'my_file.jpg'
+});
+
+metadataPromise.then(
+  (result) => console.log('metadata result', result)
+);
 ```
 
 #### Need help?
