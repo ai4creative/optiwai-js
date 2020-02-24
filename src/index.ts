@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as rp from 'request-promise';
 import {
   OptiwAIFile,
+  OptiwAIMetadaSettings,
+  OptiwAIMetadataResponse,
   OptiwAIProcessingResponse,
   OptiwAIRequestData,
   OptiwAISettings,
@@ -29,6 +31,17 @@ const uploadDataValidationSchema = Joi.object({
   dehaze: Joi.boolean().default(false),
   hdr: Joi.boolean().default(false),
   workflowId: Joi.string()
+});
+
+const getMetadataValidationSchema = Joi.object({
+  filename: Joi.string().required(),
+  minConfidence: Joi.number()
+    .min(1)
+    .max(100)
+    .default(80),
+  faces: Joi.boolean().default(true),
+  celebrities: Joi.boolean().default(true),
+  objects: Joi.boolean().default(true)
 });
 
 const OptiwAI = {
@@ -59,7 +72,7 @@ const OptiwAI = {
 
     try {
       const response = await rp.post({
-        url: `${OptiwAI.optiwAISettings.url}/api/v1/upload/api`,
+        url: `${OptiwAI.optiwAISettings.url}${data.url}`,
         headers: {
           timestamp,
           apiclient: OptiwAI.optiwAISettings.apiClient,
@@ -147,6 +160,7 @@ const OptiwAI = {
     Joi.assert(settings, initSettingsValidationSchema);
     OptiwAI.optiwAISettings = Object.assign({}, OptiwAI.optiwAISettings, settings);
   },
+
   async processFile(file: OptiwAIFile, settings: OptiwAIUploadSettings): Promise<OptiwAIProcessingResponse> {
     if (!OptiwAI.validateInit()) {
       throw OptiwAI.optiwAIError(
@@ -160,8 +174,28 @@ const OptiwAI = {
     }
 
     return await OptiwAI.sendRequest({
+      url: '/api/v1/upload/api',
       file: OptiwAI.getFileReadStream(file),
       processSettings: Buffer.from(JSON.stringify(processData.value)).toString('base64')
+    });
+  },
+
+  async getMetadata(file: OptiwAIFile, settings: OptiwAIMetadaSettings): Promise<OptiwAIMetadataResponse> {
+    if (!OptiwAI.validateInit()) {
+      throw OptiwAI.optiwAIError(
+        'SDK not initialized. Make sure that init() method with proper configuration has been executed.'
+      );
+    }
+    const metadataSettings = Joi.validate(settings, getMetadataValidationSchema);
+
+    if (metadataSettings.error) {
+      throw OptiwAI.optiwAIError(`Metadata payload invalid - ${metadataSettings.error.message}`);
+    }
+
+    return await OptiwAI.sendRequest({
+      url: '/api/v1/metadata',
+      file: OptiwAI.getFileReadStream(file),
+      processSettings: Buffer.from(JSON.stringify(metadataSettings.value)).toString('base64')
     });
   }
 };
@@ -172,6 +206,7 @@ if (process.env.NODE_ENV === 'package-test') {
   module.exports = {
     optiwAISettings: OptiwAI.optiwAISettings,
     init: OptiwAI.init,
-    processFile: OptiwAI.processFile
+    processFile: OptiwAI.processFile,
+    getMetadata: OptiwAI.getMetadata
   };
 }

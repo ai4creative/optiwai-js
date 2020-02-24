@@ -368,7 +368,11 @@ suite('sendRequest', () => {
     sinon.replace(OptiwAI, 'hashApiToken', sinon.fake.returns('api-token'));
     const file = Buffer.from('a');
 
-    const result = await OptiwAI.sendRequest({ file, processSettings: 'processSettings...' });
+    const result = await OptiwAI.sendRequest({
+      url: '/api/v1/upload/api',
+      file,
+      processSettings: 'processSettings...'
+    });
 
     sinon.assert.calledOnce(fakeRequest);
     sinon.assert.calledWith(fakeRequest, {
@@ -385,6 +389,136 @@ suite('sendRequest', () => {
     chai.assert.deepEqual(result, { linkToImage: '' });
 
     clock.restore();
+  });
+
+  teardown(() => {
+    sinon.restore();
+  });
+});
+
+suite('getMetadata method', () => {
+  test('Throws error when filename is not passed to process data', async () => {
+    let error: any = null;
+
+    try {
+      await OptiwAI.getMetadata('/file.png', {});
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNotNull(error);
+    chai.assert.equal(
+      error.message,
+      'OptiwAI: Metadata payload invalid - child "filename" fails because ["filename" is required]'
+    );
+  });
+
+  test('Throws error when getMetadata minConfidence option is less than min value', async () => {
+    let error: any = null;
+
+    try {
+      await OptiwAI.getMetadata('/file.png', { filename: 'file.png', minConfidence: 0 });
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNotNull(error);
+    chai.assert.equal(
+      error.message,
+      'OptiwAI: Metadata payload invalid - child "minConfidence" fails because ["minConfidence" must be larger than or equal to 1]'
+    );
+  });
+
+  test('Throws error when getMetadata minConfidence option is above max value', async () => {
+    let error: any = null;
+
+    try {
+      await OptiwAI.getMetadata('/file.png', { filename: 'file.png', minConfidence: 150 });
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNotNull(error);
+    chai.assert.equal(
+      error.message,
+      'OptiwAI: Metadata payload invalid - child "minConfidence" fails because ["minConfidence" must be less than or equal to 100]'
+    );
+  });
+
+  test('Throws error when getMetadata faces option is not boolean', async () => {
+    let error: any = null;
+
+    try {
+      await OptiwAI.getMetadata('/file.png', { filename: 'file.png', faces: 'test' });
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNotNull(error);
+    chai.assert.equal(
+      error.message,
+      'OptiwAI: Metadata payload invalid - child "faces" fails because ["faces" must be a boolean]'
+    );
+  });
+
+  test('Throws error when getMetadata celebrities option is not boolean', async () => {
+    let error: any = null;
+
+    try {
+      await OptiwAI.getMetadata('/file.png', { filename: 'file.png', celebrities: 'test' });
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNotNull(error);
+    chai.assert.equal(
+      error.message,
+      'OptiwAI: Metadata payload invalid - child "celebrities" fails because ["celebrities" must be a boolean]'
+    );
+  });
+
+  test('Throws error when getMetadata objects option is not boolean', async () => {
+    let error: any = null;
+
+    try {
+      await OptiwAI.getMetadata('/file.png', { filename: 'file.png', objects: 'test' });
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNotNull(error);
+    chai.assert.equal(
+      error.message,
+      'OptiwAI: Metadata payload invalid - child "objects" fails because ["objects" must be a boolean]'
+    );
+  });
+
+  test('getMetadata goes through validation when all options are valid', async () => {
+    let error: any = null;
+
+    const sendRequest = sinon.fake.resolves({});
+    const getFileReadStream = sinon.fake.returns({});
+
+    sinon.replace(OptiwAI, 'getFileReadStream', getFileReadStream);
+    sinon.replace(OptiwAI, 'sendRequest', sendRequest);
+
+    try {
+      await OptiwAI.getMetadata('/file.png', {
+        filename: 'file.png',
+        minConfidence: 50,
+        celebrities: true,
+        faces: false,
+        objects: true
+      });
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.isNull(error);
+    sinon.assert.calledOnce(sendRequest);
+    sinon.assert.calledOnce(getFileReadStream);
+
+    sinon.restore();
   });
 
   teardown(() => {
